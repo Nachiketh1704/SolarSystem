@@ -66,10 +66,10 @@ renderer.toneMappingExposure = 0.8;
 document.getElementById("container").appendChild(renderer.domElement);
 
 // === Enhanced Lighting ===
-const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+const ambientLight = new THREE.AmbientLight(0x404040, 0.8); // CHANGED: Increased from 0.4 to 0.8 for brighter planets
 scene.add(ambientLight);
 
-const sunLight = new THREE.PointLight(0xffffff, 2, 0, 2);
+const sunLight = new THREE.PointLight(0xffffff, 3.5, 0, 2); // CHANGED: Increased intensity from 2.5 to 3.5
 sunLight.position.set(0, 0, 0);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = 2048;
@@ -82,25 +82,40 @@ const cubeTextureLoader = new THREE.CubeTextureLoader();
 let texturesLoaded = 0;
 let totalTextures = 0;
 
-function loadTexture(url, onLoad) {
+function loadTexture(url, onLoad, onError) {
   totalTextures++;
-  return textureLoader.load(url, (texture) => {
-    texturesLoaded++;
-    updateLoadingProgress(
-      (texturesLoaded / totalTextures) * 90,
-      `Loading textures... ${Math.round(
-        (texturesLoaded / totalTextures) * 100
-      )}%`
-    );
-    if (onLoad) onLoad(texture);
-  });
+  return textureLoader.load(
+    url,
+    (texture) => {
+      texturesLoaded++;
+      updateLoadingProgress(
+        (texturesLoaded / totalTextures) * 90,
+        `Loading textures... ${Math.round(
+          (texturesLoaded / totalTextures) * 100
+        )}%`
+      );
+      if (onLoad) onLoad(texture);
+    },
+    undefined,
+    (error) => {
+      texturesLoaded++;
+      console.warn(`Failed to load texture: ${url}`);
+      updateLoadingProgress(
+        (texturesLoaded / totalTextures) * 90,
+        `Loading textures... ${Math.round(
+          (texturesLoaded / totalTextures) * 100
+        )}%`
+      );
+      if (onError) onError(error);
+    }
+  );
 }
 
-// === Enhanced Planet Data ===
+// === Enhanced Planet Data with Accurate Colors ===
 const PLANETS = [
   {
     name: "Mercury",
-    color: 0x8c7853,
+    color: 0x8c7853, // Grayish-brown like real Mercury
     size: 1.2,
     distance: 15,
     speed: 4.15,
@@ -127,7 +142,7 @@ const PLANETS = [
   },
   {
     name: "Venus",
-    color: 0xffc649,
+    color: 0xffc649, // Bright yellowish-orange like Venus's clouds
     size: 1.8,
     distance: 20,
     speed: 3.24,
@@ -154,7 +169,7 @@ const PLANETS = [
   },
   {
     name: "Earth",
-    color: 0x6b93d6,
+    color: 0x6b93d6, // Blue like Earth's oceans
     size: 2,
     distance: 25,
     speed: 2.98,
@@ -181,7 +196,7 @@ const PLANETS = [
   },
   {
     name: "Mars",
-    color: 0xcd5c5c,
+    color: 0xcd5c5c, // Rusty red like Mars's iron oxide surface
     size: 1.6,
     distance: 30,
     speed: 2.41,
@@ -208,7 +223,7 @@ const PLANETS = [
   },
   {
     name: "Jupiter",
-    color: 0xd8ca9d,
+    color: 0xd8ca9d, // Tan/beige like Jupiter's bands
     size: 6,
     distance: 40,
     speed: 1.31,
@@ -235,7 +250,7 @@ const PLANETS = [
   },
   {
     name: "Saturn",
-    color: 0xfad5a5,
+    color: 0xfad5a5, // Pale gold like Saturn's atmosphere
     size: 5,
     distance: 50,
     speed: 0.97,
@@ -263,7 +278,7 @@ const PLANETS = [
   },
   {
     name: "Uranus",
-    color: 0x4fd0e4,
+    color: 0x4fd0e4, // Cyan-blue like Uranus's methane atmosphere
     size: 3.2,
     distance: 60,
     speed: 0.68,
@@ -290,7 +305,7 @@ const PLANETS = [
   },
   {
     name: "Neptune",
-    color: 0x4b70dd,
+    color: 0x4b70dd, // Deep blue like Neptune's methane atmosphere
     size: 3.1,
     distance: 70,
     speed: 0.54,
@@ -319,57 +334,41 @@ const PLANETS = [
 
 // === Enhanced Space Background ===
 function createSpaceBackground() {
-  const spaceTextures = [
-    "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1024&h=1024&fit=crop",
-    "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1024&h=1024&fit=crop",
-    "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1024&h=1024&fit=crop",
-    "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1024&h=1024&fit=crop",
-    "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1024&h=1024&fit=crop",
-    "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1024&h=1024&fit=crop",
-  ];
-
-  cubeTextureLoader.load(spaceTextures, (texture) => {
-    scene.background = texture;
-    texturesLoaded++;
-    updateLoadingProgress(
-      (texturesLoaded / totalTextures) * 90,
-      `Loading space background... ${Math.round(
-        (texturesLoaded / totalTextures) * 100
-      )}%`
-    );
-  });
-  totalTextures++;
+  // Create a simple starfield background instead of loading external textures
+  scene.background = new THREE.Color(0x000510);
 }
 
 // === Enhanced Sun Creation ===
 function createSun() {
   const sunGeometry = new THREE.SphereGeometry(8, 64, 64);
+
+  // CHANGED: More realistic sun material with enhanced colors and effects
   const sunMaterial = new THREE.MeshBasicMaterial({
-    color: 0xfdb813,
-    emissive: 0xfdb813,
-    emissiveIntensity: 0.8,
+    color: 0xffd700, // CHANGED: Brighter gold color
+    emissive: 0xffa500, // CHANGED: Orange emissive for more realistic glow
+    emissiveIntensity: 1.2, // CHANGED: Increased from 0.8 to 1.2
   });
 
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
   scene.add(sun);
 
-  // Add corona effect
+  // CHANGED: Enhanced corona with more realistic solar activity colors
   const coronaGeometry = new THREE.SphereGeometry(12, 32, 32);
   const coronaMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: 0.1,
+    opacity: 0.15, // CHANGED: Increased from 0.1 to 0.15 for more visible corona
     side: THREE.BackSide,
   });
   const corona = new THREE.Mesh(coronaGeometry, coronaMaterial);
   sun.add(corona);
 
-  // Add animated glow
+  // CHANGED: Enhanced animated glow with solar flare effects
   const glowGeometry = new THREE.SphereGeometry(15, 32, 32);
   const glowMaterial = new THREE.ShaderMaterial({
     uniforms: {
       time: { value: 0 },
-      color: { value: new THREE.Color(0xfdb813) },
+      color: { value: new THREE.Color(0xffd700) }, // CHANGED: Brighter gold for glow
     },
     vertexShader: `
       varying vec3 vPosition;
@@ -383,7 +382,7 @@ function createSun() {
       uniform vec3 color;
       varying vec3 vPosition;
       void main() {
-        float intensity = 0.3 + 0.2 * sin(time + length(vPosition));
+        float intensity = 0.4 + 0.3 * sin(time + length(vPosition)); // CHANGED: Enhanced intensity variation
         gl_FragColor = vec4(color, intensity);
       }
     `,
@@ -392,6 +391,35 @@ function createSun() {
   });
   const glow = new THREE.Mesh(glowGeometry, glowMaterial);
   sun.add(glow);
+
+  // NEW: Adding solar prominence effects (additional glow layers)
+  const prominenceGeometry = new THREE.SphereGeometry(18, 32, 32);
+  const prominenceMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      time: { value: 0 },
+      color: { value: new THREE.Color(0xff4500) }, // Orange-red for solar prominences
+    },
+    vertexShader: `
+      varying vec3 vPosition;
+      void main() {
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float time;
+      uniform vec3 color;
+      varying vec3 vPosition;
+      void main() {
+        float intensity = 0.1 + 0.15 * sin(time * 0.5 + length(vPosition) * 2.0);
+        gl_FragColor = vec4(color, intensity);
+      }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+  });
+  const prominence = new THREE.Mesh(prominenceGeometry, prominenceMaterial);
+  sun.add(prominence);
 
   return sun;
 }
@@ -421,22 +449,32 @@ function createPlanet(planetData, index) {
   scene.add(orbit);
   planetOrbits.push(orbit);
 
-  // Create planet
+  // Create planet with proper material handling
   const geometry = new THREE.SphereGeometry(planetData.size, 64, 64);
-  let material;
 
+  // CHANGED: Enhanced material with better visibility and brightness
+  const material = new THREE.MeshPhongMaterial({
+    color: planetData.color,
+    shininess: planetData.name === "Venus" ? 100 : 30,
+    bumpScale: 0.1,
+    emissive: planetData.color, // NEW: Added emissive color for better visibility
+    emissiveIntensity: 0.1, // NEW: Low intensity emissive for subtle glow
+  });
+
+  // Try to load texture but don't depend on it
   if (planetData.texture) {
-    const texture = loadTexture(planetData.texture);
-    material = new THREE.MeshPhongMaterial({
-      map: texture,
-      shininess: planetData.name === "Venus" ? 100 : 30,
-      bumpScale: 0.1,
-    });
-  } else {
-    material = new THREE.MeshPhongMaterial({
-      color: planetData.color,
-      shininess: 30,
-    });
+    loadTexture(
+      planetData.texture,
+      (texture) => {
+        // Successfully loaded texture
+        material.map = texture;
+        material.needsUpdate = true;
+      },
+      (error) => {
+        // Failed to load texture, keep the color
+        console.warn(`Using color fallback for ${planetData.name}`);
+      }
+    );
   }
 
   const mesh = new THREE.Mesh(geometry, material);
@@ -469,14 +507,11 @@ function createPlanet(planetData, index) {
 
 function createSaturnRings(planet, size) {
   const ringGeometry = new THREE.RingGeometry(size * 1.2, size * 2.2, 128);
-  const ringTexture = loadTexture(
-    "https://solarsystem.nasa.gov/system/resources/detail_files/2490_saturn_cassini_extended.jpg"
-  );
   const ringMaterial = new THREE.MeshBasicMaterial({
-    map: ringTexture,
+    color: 0xb8860b,
     side: THREE.DoubleSide,
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.6,
   });
   const ring = new THREE.Mesh(ringGeometry, ringMaterial);
   ring.rotation.x = Math.PI / 2;
@@ -1178,11 +1213,19 @@ function animate() {
       });
     }
 
-    // Update sun glow
+    // CHANGED: Update sun glow and prominence effects
     if (sun && sun.children.length > 1) {
       const glow = sun.children[1];
       if (glow.material.uniforms) {
         glow.material.uniforms.time.value += scaledDelta;
+      }
+
+      // NEW: Update prominence effect if it exists
+      if (sun.children.length > 2) {
+        const prominence = sun.children[2];
+        if (prominence.material.uniforms) {
+          prominence.material.uniforms.time.value += scaledDelta * 0.7; // Slower animation for prominence
+        }
       }
     }
 

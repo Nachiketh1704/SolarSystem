@@ -1,17 +1,8 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-app = FastAPI(title="Solar System API")
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Create a new FastAPI instance with minimal configuration
+app = FastAPI()
 
 @app.get("/api/health")
 async def health_check():
