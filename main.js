@@ -888,22 +888,65 @@ function setupCameraControls() {
     }
   });
 
-  // Keyboard controls
+  // Enhanced Keyboard controls with automatic description display
   document.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "ArrowLeft":
+        e.preventDefault();
         if (selectedPlanetIndex > 0) {
           focusOnPlanet(selectedPlanetIndex - 1);
+          showPlanetInfo(selectedPlanetIndex - 1);
+        } else if (selectedPlanetIndex === -1) {
+          // If no planet selected, start with the last planet
+          focusOnPlanet(PLANETS.length - 1);
+          showPlanetInfo(PLANETS.length - 1);
         }
         break;
       case "ArrowRight":
+        e.preventDefault();
         if (selectedPlanetIndex < PLANETS.length - 1) {
           focusOnPlanet(selectedPlanetIndex + 1);
+          showPlanetInfo(selectedPlanetIndex + 1);
+        } else if (selectedPlanetIndex === -1) {
+          // If no planet selected, start with the first planet
+          focusOnPlanet(0);
+          showPlanetInfo(0);
+        }
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        // Quick navigation - jump by 2 planets forward
+        const nextIndex = Math.min(selectedPlanetIndex + 2, PLANETS.length - 1);
+        if (nextIndex !== selectedPlanetIndex) {
+          focusOnPlanet(nextIndex);
+          showPlanetInfo(nextIndex);
+        }
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        // Quick navigation - jump by 2 planets backward
+        const prevIndex = Math.max(selectedPlanetIndex - 2, 0);
+        if (prevIndex !== selectedPlanetIndex) {
+          focusOnPlanet(prevIndex);
+          showPlanetInfo(prevIndex);
         }
         break;
       case " ":
         e.preventDefault();
         togglePause();
+        break;
+      case "Escape":
+        e.preventDefault();
+        // Close info panel and return to overview
+        document.getElementById("info-panel").classList.remove("active");
+        resetCamera();
+        break;
+      case "h":
+      case "H":
+        e.preventDefault();
+        // Toggle help panel
+        const helpPanel = document.getElementById("help-panel");
+        helpPanel.classList.toggle("active");
         break;
     }
   });
@@ -980,16 +1023,33 @@ function focusOnPlanet(index) {
   // Update UI
   document.getElementById("planet-select").value = index;
 
-  // Highlight planet
+  // Enhanced planet highlighting with pulsing effect
   planetMeshes.forEach((mesh, i) => {
     if (i === index) {
-      mesh.material.emissive.setHex(0x444444);
-      mesh.material.emissiveIntensity = 0.3;
+      mesh.material.emissive.setHex(0x666666);
+      mesh.material.emissiveIntensity = 0.4;
+      
+      // Add pulsing animation to selected planet
+      const originalScale = mesh.scale.clone();
+      const pulseAnimation = () => {
+        if (selectedPlanetIndex === i) {
+          const time = Date.now() * 0.003;
+          const scale = 1 + Math.sin(time) * 0.1;
+          mesh.scale.setScalar(scale);
+          requestAnimationFrame(pulseAnimation);
+        } else {
+          mesh.scale.copy(originalScale);
+        }
+      };
+      pulseAnimation();
     } else {
       mesh.material.emissive.setHex(0x000000);
       mesh.material.emissiveIntensity = 0;
     }
   });
+
+  // Add visual feedback notification
+  showPlanetNotification(planetData.name);
 }
 
 function showPlanetInfo(index) {
@@ -1021,6 +1081,96 @@ function showPlanetInfo(index) {
 
   // Show panel
   infoPanel.classList.add("active");
+}
+
+// Enhanced visual feedback notification for planet navigation
+function showPlanetNotification(planetName) {
+  // Remove existing notification if any
+  const existingNotification = document.querySelector('.planet-notification');
+  if (existingNotification) {
+    existingNotification.remove();
+  }
+
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = 'planet-notification';
+  notification.innerHTML = `
+    <div class="notification-content">
+      <div class="notification-icon">🌍</div>
+      <div class="notification-text">
+        <strong>Focusing on ${planetName}</strong>
+        <div class="notification-subtitle">Use ← → arrows to navigate | ESC to close</div>
+      </div>
+    </div>
+  `;
+
+  // Add styles
+  notification.style.cssText = `
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, rgba(15, 15, 25, 0.95), rgba(15, 15, 25, 0.8));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    padding: 15px 20px;
+    z-index: 1000;
+    opacity: 0;
+    animation: notificationSlideIn 0.4s ease forwards;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  `;
+
+  // Add animation styles
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes notificationSlideIn {
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    @keyframes notificationSlideOut {
+      to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+    }
+    .notification-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+    }
+    .notification-icon {
+      font-size: 1.5rem;
+    }
+    .notification-text strong {
+      color: #ffd700;
+      font-size: 1rem;
+      display: block;
+    }
+    .notification-subtitle {
+      color: #bbb;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+  `;
+  document.head.appendChild(style);
+
+  document.body.appendChild(notification);
+
+  // Auto-remove after 3 seconds
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.style.animation = 'notificationSlideOut 0.3s ease forwards';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+        }
+      }, 300);
+    }
+  }, 3000);
 }
 
 function resetCamera() {
