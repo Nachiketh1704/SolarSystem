@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar System 3D Simulation</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+    <div id="control-panel">
+      <h2>Planet Speed Controls</h2>
+      <div class="slider-group">
+        <label>Mercury</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-mercury"
+          />
+        </div>
+        <span id="val-mercury">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Venus</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-venus"
+          />
+        </div>
+        <span id="val-venus">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Earth</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-earth"
+          />
+        </div>
+        <span id="val-earth">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Mars</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-mars"
+          />
+        </div>
+        <span id="val-mars">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Jupiter</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-jupiter"
+          />
+        </div>
+        <span id="val-jupiter">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Saturn</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-saturn"
+          />
+        </div>
+        <span id="val-saturn">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Uranus</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-uranus"
+          />
+        </div>
+        <span id="val-uranus">1.00x</span>
+      </div>
+      <div class="slider-group">
+        <label>Neptune</label>
+        <div class="slider-flex">
+          <input
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.01"
+            value="1"
+            id="speed-neptune"
+          />
+        </div>
+        <span id="val-neptune">1.00x</span>
+      </div>
+      <button id="pause-btn">Pause</button>
+      <button id="resume-btn" style="display: none">Resume</button>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
