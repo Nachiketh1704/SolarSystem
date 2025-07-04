@@ -44,7 +44,7 @@ function hideLoadingScreen() {
 
 // === Scene Setup ===
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000510);
+scene.background = new THREE.Color(0x001122); // CHANGED: Made background brighter from 0x000510 to 0x001122 for better visibility
 
 const camera = new THREE.PerspectiveCamera(
   60,
@@ -68,15 +68,20 @@ renderer.toneMappingExposure = 0.8;
 document.getElementById("container").appendChild(renderer.domElement);
 
 // === Enhanced Lighting ===
-const ambientLight = new THREE.AmbientLight(0x404040, 0.8); // CHANGED: Increased from 0.4 to 0.8 for brighter planets
+const ambientLight = new THREE.AmbientLight(0x606060, 1.2); // CHANGED: Increased from 0.8 to 1.2 and brighter color for much brighter planets
 scene.add(ambientLight);
 
-const sunLight = new THREE.PointLight(0xffffff, 3.5, 0, 2); // CHANGED: Increased intensity from 2.5 to 3.5
+const sunLight = new THREE.PointLight(0xffffff, 4.5, 0, 2); // CHANGED: Increased intensity from 3.5 to 4.5 for brighter illumination
 sunLight.position.set(0, 0, 0);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = 2048;
 sunLight.shadow.mapSize.height = 2048;
 scene.add(sunLight);
+
+// NEW: Add additional fill light to brighten the overall scene
+const fillLight = new THREE.DirectionalLight(0x4444ff, 0.3);
+fillLight.position.set(-50, 50, 50);
+scene.add(fillLight);
 
 // === Texture Loader with Progress ===
 const textureLoader = new THREE.TextureLoader();
@@ -103,7 +108,7 @@ function loadTexture(url, onLoad, onError) {
   return null; // Return null texture
 }
 
-// === Enhanced Planet Data with Accurate Colors ===
+// === Enhanced Planet Data with Accurate Colors and Images ===
 const PLANETS = [
   {
     name: "Mercury",
@@ -113,7 +118,9 @@ const PLANETS = [
     speed: 4.15,
     tilt: 0.01,
     rotationSpeed: 0.0058,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Mercury
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzhjNzg1MyIgc3Ryb2tlPSIjNWY1MzM5IiBzdHJva2Utd2lkdGg9IjMiLz48dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TWVyY3VyeTwvdGV4dD48L3N2Zz4=",
     description:
       "Mercury is the smallest planet in our solar system and the closest to the Sun. It has extreme temperatures and no atmosphere to speak of.",
     facts: [
@@ -139,7 +146,9 @@ const PLANETS = [
     speed: 3.24,
     tilt: (177.4 * Math.PI) / 180,
     rotationSpeed: -0.0024,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Venus
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2ZmYzY0OSIgc3Ryb2tlPSIjZGRhODMyIiBzdHJva2Utd2lkdGg9IjMiLz48dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VmVudXM8L3RleHQ+PC9zdmc+",
     description:
       "Venus is the hottest planet in our solar system, with surface temperatures hot enough to melt lead. It's often called Earth's twin due to similar size.",
     facts: [
@@ -165,7 +174,9 @@ const PLANETS = [
     speed: 2.98,
     tilt: (23.5 * Math.PI) / 180,
     rotationSpeed: 0.0167,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Earth
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzZiOTNkNiIgc3Ryb2tlPSIjNGE3Y2IyIiBzdHJva2Utd2lkdGg9IjMiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI4IiBmaWxsPSIjMzRhODUzIi8+PGNpcmNsZSBjeD0iNjIiIGN5PSI2MCIgcj0iNiIgZmlsbD0iIzM0YTg1MyIvPjx0ZXh0IHg9IjUwIiB5PSI4NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FYXJ0aDwvdGV4dD48L3N2Zz4=",
     description:
       "Earth is the only known planet with life. It has liquid water, a protective atmosphere, and a magnetic field that shields us from harmful solar radiation.",
     facts: [
@@ -191,7 +202,9 @@ const PLANETS = [
     speed: 2.41,
     tilt: (25.2 * Math.PI) / 180,
     rotationSpeed: 0.0166,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Mars
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2NkNWM1YyIgc3Ryb2tlPSIjYWE0MDQwIiBzdHJva2Utd2lkdGg9IjMiLz48Y2lyY2xlIGN4PSI0NSIgY3k9IjM1IiByPSI0IiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iNTgiIGN5PSI2NSIgcj0iMyIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHg9IjUwIiB5PSI4NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NYXJZPC90ZXh0Pjwvc3ZnPg==",
     description:
       "Mars is known as the Red Planet due to iron oxide on its surface. It has the largest volcano and canyon in the solar system.",
     facts: [
@@ -217,7 +230,9 @@ const PLANETS = [
     speed: 1.31,
     tilt: (3.1 * Math.PI) / 180,
     rotationSpeed: 0.0417,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Jupiter
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2Q4Y2E5ZCIgc3Ryb2tlPSIjYjZhNTc3IiBzdHJva2Utd2lkdGg9IjMiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSIzNSIgcng9IjMwIiByeT0iMyIgZmlsbD0iI2FhOTM2OSIvPjxlbGxpcHNlIGN4PSI1MCIgY3k9IjUwIiByeD0iMzIiIHJ5PSI0IiBmaWxsPSIjYWE5MzY5Ii8+PGVsbGlwc2UgY3g9IjUwIiBjeT0iNjUiIHJ4PSIyOCIgcnk9IjMiIGZpbGw9IiNhYTkzNjkiLz48dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SnVwaXRlcjwvdGV4dD48L3N2Zz4=",
     description:
       "Jupiter is the largest planet in our solar system. It's a gas giant with a Great Red Spot - a storm larger than Earth that has raged for centuries.",
     facts: [
@@ -243,7 +258,9 @@ const PLANETS = [
     speed: 0.97,
     tilt: (26.7 * Math.PI) / 180,
     rotationSpeed: 0.0378,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Saturn
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZWxsaXBzZSBjeD0iNTAiIGN5PSI1MCIgcng9IjQ1IiByeT0iMTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2I4ODYwYiIgc3Ryb2tlLXdpZHRoPSIzIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMjgiIGZpbGw9IiNmYWQ1YTUiIHN0cm9rZT0iI2RkYjY4MCIgc3Ryb2tlLXdpZHRoPSIzIi8+PHRleHQgeD0iNTAiIHk9IjU1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNhdHVybjwvdGV4dD48L3N2Zz4=",
     description:
       "Saturn is famous for its prominent ring system. It's a gas giant that's less dense than water - it would float!",
     facts: [
@@ -270,7 +287,9 @@ const PLANETS = [
     speed: 0.68,
     tilt: (97.8 * Math.PI) / 180,
     rotationSpeed: -0.0142,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Uranus
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzRmZDBlNCIgc3Ryb2tlPSIjMzBiNGNhIiBzdHJva2Utd2lkdGg9IjMiLz48dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VXJhbnVzPC90ZXh0Pjwvc3ZnPg==",
     description:
       "Uranus is unique because it rotates on its side. It's an ice giant with a faint ring system and 27 known moons.",
     facts: [
@@ -296,7 +315,9 @@ const PLANETS = [
     speed: 0.54,
     tilt: (28.3 * Math.PI) / 180,
     rotationSpeed: 0.0158,
-    // Removed texture URL - using fallback colors instead
+    // NEW: Added placeholder image for Neptune
+    image:
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzRiNzBkZCIgc3Ryb2tlPSIjMzU1OGJhIiBzdHJva2Utd2lkdGg9IjMiLz48dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TmVwdHVuZTwvdGV4dD48L3N2Zz4=",
     description:
       "Neptune is the windiest planet in our solar system, with winds reaching speeds of up to 2,100 km/h. It's a deep blue ice giant.",
     facts: [
@@ -326,33 +347,35 @@ function createSpaceBackground() {
 function createSun() {
   const sunGeometry = new THREE.SphereGeometry(8, 64, 64);
 
-  // CHANGED: More realistic sun material with enhanced colors and effects
-  const sunMaterial = new THREE.MeshBasicMaterial({
+  // CHANGED: Fixed material type and enhanced colors for brighter sun
+  const sunMaterial = new THREE.MeshStandardMaterial({
     color: 0xffd700, // CHANGED: Brighter gold color
     emissive: 0xffa500, // CHANGED: Orange emissive for more realistic glow
-    emissiveIntensity: 1.2, // CHANGED: Increased from 0.8 to 1.2
+    emissiveIntensity: 1.5, // CHANGED: Increased from 1.2 to 1.5 for much brighter sun
+    roughness: 0.1,
+    metalness: 0.1,
   });
 
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
   scene.add(sun);
 
-  // CHANGED: Enhanced corona with more realistic solar activity colors
+  // CHANGED: Enhanced corona with more visible and brighter effects
   const coronaGeometry = new THREE.SphereGeometry(12, 32, 32);
   const coronaMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: 0.15, // CHANGED: Increased from 0.1 to 0.15 for more visible corona
+    opacity: 0.25, // CHANGED: Increased from 0.15 to 0.25 for more visible corona
     side: THREE.BackSide,
   });
   const corona = new THREE.Mesh(coronaGeometry, coronaMaterial);
   sun.add(corona);
 
-  // CHANGED: Enhanced animated glow with solar flare effects
+  // CHANGED: Enhanced animated glow with brighter solar flare effects
   const glowGeometry = new THREE.SphereGeometry(15, 32, 32);
   const glowMaterial = new THREE.ShaderMaterial({
     uniforms: {
       time: { value: 0 },
-      color: { value: new THREE.Color(0xffd700) }, // CHANGED: Brighter gold for glow
+      color: { value: new THREE.Color(0xffff00) }, // CHANGED: Brighter yellow for more visible glow
     },
     vertexShader: `
       varying vec3 vPosition;
@@ -366,7 +389,7 @@ function createSun() {
       uniform vec3 color;
       varying vec3 vPosition;
       void main() {
-        float intensity = 0.4 + 0.3 * sin(time + length(vPosition)); // CHANGED: Enhanced intensity variation
+        float intensity = 0.5 + 0.4 * sin(time + length(vPosition)); // CHANGED: Enhanced intensity for brighter glow
         gl_FragColor = vec4(color, intensity);
       }
     `,
@@ -376,12 +399,12 @@ function createSun() {
   const glow = new THREE.Mesh(glowGeometry, glowMaterial);
   sun.add(glow);
 
-  // NEW: Adding solar prominence effects (additional glow layers)
+  // CHANGED: Enhanced solar prominence effects with brighter colors
   const prominenceGeometry = new THREE.SphereGeometry(18, 32, 32);
   const prominenceMaterial = new THREE.ShaderMaterial({
     uniforms: {
       time: { value: 0 },
-      color: { value: new THREE.Color(0xff4500) }, // Orange-red for solar prominences
+      color: { value: new THREE.Color(0xff6600) }, // CHANGED: Brighter orange-red for more visible solar prominences
     },
     vertexShader: `
       varying vec3 vPosition;
@@ -395,7 +418,7 @@ function createSun() {
       uniform vec3 color;
       varying vec3 vPosition;
       void main() {
-        float intensity = 0.1 + 0.15 * sin(time * 0.5 + length(vPosition) * 2.0);
+        float intensity = 0.15 + 0.2 * sin(time * 0.5 + length(vPosition) * 2.0); // CHANGED: Increased base intensity for brighter prominences
         gl_FragColor = vec4(color, intensity);
       }
     `,
@@ -419,13 +442,14 @@ const planetOrbits = [];
 function createPlanet(planetData, index) {
   const geometry = new THREE.SphereGeometry(planetData.size, 64, 64);
 
-  // Create material with enhanced colors instead of textures
+  // CHANGED: Enhanced materials with brighter colors and better visibility
   const material = new THREE.MeshPhongMaterial({
     color: planetData.color,
-    shininess: 30,
-    specular: 0x333333,
-    // Add some variation based on planet properties
-    emissive: new THREE.Color(planetData.color).multiplyScalar(0.1),
+    shininess: 50, // CHANGED: Increased from 30 to 50 for more shine
+    specular: 0x666666, // CHANGED: Brighter specular from 0x333333 to 0x666666
+    // CHANGED: Enhanced emissive properties for better visibility
+    emissive: new THREE.Color(planetData.color).multiplyScalar(0.2), // CHANGED: Increased from 0.1 to 0.2 for brighter glow
+    emissiveIntensity: 0.3, // NEW: Added emissive intensity for more visible planets
   });
 
   const planet = new THREE.Mesh(geometry, material);
@@ -465,10 +489,10 @@ function createOrbitPath(distance, index) {
     128
   );
   const orbitMaterial = new THREE.MeshBasicMaterial({
-    color: 0x444444,
+    color: 0x888888, // CHANGED: Brighter color from 0x444444 to 0x888888 for better visibility
     side: THREE.DoubleSide,
     transparent: true,
-    opacity: 0.3,
+    opacity: 0.4, // CHANGED: Increased from 0.3 to 0.4 for more visible orbits
   });
   const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
   orbit.rotation.x = Math.PI / 2;
@@ -603,10 +627,11 @@ function createStarfield() {
     positions[i3 + 1] = (Math.random() - 0.5) * 2000;
     positions[i3 + 2] = (Math.random() - 0.5) * 2000;
 
+    // CHANGED: Brighter star colors for better visibility
     const color = new THREE.Color().setHSL(
       0.6 + Math.random() * 0.2,
       0.8,
-      0.7 + Math.random() * 0.3
+      0.8 + Math.random() * 0.2 // CHANGED: Increased from 0.7 to 0.8 for brighter stars
     );
     colors[i3] = color.r;
     colors[i3 + 1] = color.g;
@@ -621,9 +646,9 @@ function createStarfield() {
 
   const starMaterial = new THREE.PointsMaterial({
     vertexColors: true,
-    size: 2,
+    size: 3, // CHANGED: Increased from 2 to 3 for more visible stars
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.9, // CHANGED: Increased from 0.8 to 0.9 for brighter stars
   });
 
   const stars = new THREE.Points(starGeometry, starMaterial);
@@ -711,6 +736,7 @@ function setupUI() {
         resetCamera();
       } else {
         focusOnPlanet(index);
+        showPlanetInfo(index); // NEW: Also show planet info when using dropdown
       }
     });
   }
@@ -894,41 +920,58 @@ function setupCameraControls() {
       case "ArrowLeft":
         e.preventDefault();
         if (selectedPlanetIndex > 0) {
-          focusOnPlanet(selectedPlanetIndex - 1);
-          showPlanetInfo(selectedPlanetIndex - 1);
+          const newIndex = selectedPlanetIndex - 1;
+          focusOnPlanet(newIndex);
+          showPlanetInfo(newIndex);
         } else if (selectedPlanetIndex === -1) {
-          // If no planet selected, start with the last planet
+          // If no planet selected, start with the last planet (Neptune)
           focusOnPlanet(PLANETS.length - 1);
           showPlanetInfo(PLANETS.length - 1);
         }
+        // If already at Mercury (index 0), do nothing (no wrap-around)
         break;
       case "ArrowRight":
         e.preventDefault();
-        if (selectedPlanetIndex < PLANETS.length - 1) {
-          focusOnPlanet(selectedPlanetIndex + 1);
-          showPlanetInfo(selectedPlanetIndex + 1);
-        } else if (selectedPlanetIndex === -1) {
-          // If no planet selected, start with the first planet
+        if (selectedPlanetIndex === -1) {
+          // If no planet selected, start with the first planet (Mercury)
           focusOnPlanet(0);
           showPlanetInfo(0);
+        } else if (selectedPlanetIndex < PLANETS.length - 1) {
+          const newIndex = selectedPlanetIndex + 1;
+          focusOnPlanet(newIndex);
+          showPlanetInfo(newIndex);
         }
+        // If already at Neptune (index 7), do nothing (no wrap-around)
         break;
       case "ArrowUp":
         e.preventDefault();
         // Quick navigation - jump by 2 planets forward
-        const nextIndex = Math.min(selectedPlanetIndex + 2, PLANETS.length - 1);
-        if (nextIndex !== selectedPlanetIndex) {
-          focusOnPlanet(nextIndex);
-          showPlanetInfo(nextIndex);
+        if (selectedPlanetIndex === -1) {
+          focusOnPlanet(1); // Start with Venus if no planet selected
+          showPlanetInfo(1);
+        } else {
+          const nextIndex = Math.min(
+            selectedPlanetIndex + 2,
+            PLANETS.length - 1
+          );
+          if (nextIndex !== selectedPlanetIndex) {
+            focusOnPlanet(nextIndex);
+            showPlanetInfo(nextIndex);
+          }
         }
         break;
       case "ArrowDown":
         e.preventDefault();
         // Quick navigation - jump by 2 planets backward
-        const prevIndex = Math.max(selectedPlanetIndex - 2, 0);
-        if (prevIndex !== selectedPlanetIndex) {
-          focusOnPlanet(prevIndex);
-          showPlanetInfo(prevIndex);
+        if (selectedPlanetIndex === -1) {
+          focusOnPlanet(PLANETS.length - 2); // Start with Uranus if no planet selected
+          showPlanetInfo(PLANETS.length - 2);
+        } else {
+          const prevIndex = Math.max(selectedPlanetIndex - 2, 0);
+          if (prevIndex !== selectedPlanetIndex) {
+            focusOnPlanet(prevIndex);
+            showPlanetInfo(prevIndex);
+          }
         }
         break;
       case " ":
@@ -1028,7 +1071,7 @@ function focusOnPlanet(index) {
     if (i === index) {
       mesh.material.emissive.setHex(0x666666);
       mesh.material.emissiveIntensity = 0.4;
-      
+
       // Add pulsing animation to selected planet
       const originalScale = mesh.scale.clone();
       const pulseAnimation = () => {
@@ -1048,8 +1091,7 @@ function focusOnPlanet(index) {
     }
   });
 
-  // Add visual feedback notification
-  showPlanetNotification(planetData.name);
+  // REMOVED: showPlanetNotification(planetData.name) - No more focused planet notifications
 }
 
 function showPlanetInfo(index) {
@@ -1058,6 +1100,15 @@ function showPlanetInfo(index) {
 
   // Update info panel content
   document.getElementById("info-title").textContent = planetData.name;
+
+  // NEW: Set the planet image
+  const infoImage = document.getElementById("info-image");
+  if (infoImage && planetData.image) {
+    infoImage.src = planetData.image;
+    infoImage.alt = planetData.name;
+    infoImage.style.display = "block";
+  }
+
   document.getElementById("info-diameter").textContent =
     planetData.stats.diameter;
   document.getElementById("info-distance").textContent =
@@ -1084,22 +1135,30 @@ function showPlanetInfo(index) {
 }
 
 // Enhanced visual feedback notification for planet navigation
+let lastNotificationTime = 0; // NEW: Track last notification time to reduce frequency
 function showPlanetNotification(planetName) {
+  // NEW: Only show notification if enough time has passed (3 seconds)
+  const now = Date.now();
+  if (now - lastNotificationTime < 3000) {
+    return; // Skip showing notification if shown recently
+  }
+  lastNotificationTime = now;
+
   // Remove existing notification if any
-  const existingNotification = document.querySelector('.planet-notification');
+  const existingNotification = document.querySelector(".planet-notification");
   if (existingNotification) {
     existingNotification.remove();
   }
 
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.className = 'planet-notification';
+  // Create notification element - CHANGED: Simplified message, less focus on arrow keys
+  const notification = document.createElement("div");
+  notification.className = "planet-notification";
   notification.innerHTML = `
     <div class="notification-content">
       <div class="notification-icon">🌍</div>
       <div class="notification-text">
         <strong>Focusing on ${planetName}</strong>
-        <div class="notification-subtitle">Use ← → arrows to navigate | ESC to close</div>
+        <div class="notification-subtitle">Click on other planets to explore | Press H for help</div>
       </div>
     </div>
   `;
@@ -1122,7 +1181,7 @@ function showPlanetNotification(planetName) {
   `;
 
   // Add animation styles
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.textContent = `
     @keyframes notificationSlideIn {
       to {
@@ -1160,17 +1219,17 @@ function showPlanetNotification(planetName) {
 
   document.body.appendChild(notification);
 
-  // Auto-remove after 3 seconds
+  // Auto-remove after 2.5 seconds (reduced from 3 seconds)
   setTimeout(() => {
     if (notification.parentNode) {
-      notification.style.animation = 'notificationSlideOut 0.3s ease forwards';
+      notification.style.animation = "notificationSlideOut 0.3s ease forwards";
       setTimeout(() => {
         if (notification.parentNode) {
           notification.remove();
         }
       }, 300);
     }
-  }, 3000);
+  }, 2500);
 }
 
 function resetCamera() {

@@ -164,20 +164,22 @@ body {
   z-index: 1;
 }
 
-/* Enhanced Control Panel */
+/* Enhanced Control Panel - Brighter - With Better Height Management */
 #control-panel {
   position: fixed;
   top: 20px;
   left: 20px;
-  background: rgba(15, 15, 25, 0.95);
+  background: rgba(25, 25, 35, 0.95); /* CHANGED: Brighter background from rgba(15, 15, 25, 0.95) */
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15); /* CHANGED: Brighter border from 0.1 */
   border-radius: 20px;
   padding: 25px;
   min-width: 320px;
   max-width: 380px;
+  max-height: 85vh; /* NEW: Limit height to 85% of viewport */
+  overflow-y: auto; /* NEW: Make it scrollable when content overflows */
   z-index: 100;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 215, 0, 0.15); /* CHANGED: Brighter gold border */
   transition: all 0.4s ease;
 }
 
@@ -555,22 +557,22 @@ body {
   right: auto;
 }
 
-/* Information Panel */
+/* Information Panel - Brighter */
 .info-panel {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 420px;
+  width: 450px; /* CHANGED: Increased from 420px to 450px for better text display */
   max-width: 90vw;
   max-height: 85vh;
-  background: rgba(15, 15, 25, 0.95);
+  background: rgba(25, 25, 35, 0.95); /* CHANGED: Brighter background */
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15); /* CHANGED: Brighter border */
   border-radius: 20px;
   padding: 0;
   z-index: 200;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 215, 0, 0.1);
-  transform: translateX(440px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 215, 0, 0.15); /* CHANGED: Brighter gold border */
+  transform: translateX(470px); /* CHANGED: Adjusted for new width */
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
@@ -676,6 +678,8 @@ body {
   line-height: 1.7;
   color: #ddd;
   font-size: 1rem;
+  word-wrap: break-word; /* NEW: Ensure long words wrap properly */
+  overflow-wrap: break-word; /* NEW: Better text wrapping support */
 }
 
 .info-facts h4 {
@@ -716,7 +720,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Help Panel */
+/* Help Panel - Brighter */
 .help-panel {
   position: fixed;
   top: 50%;
@@ -725,9 +729,9 @@ body {
   width: 650px;
   max-width: 90vw;
   max-height: 85vh;
-  background: rgba(15, 15, 25, 0.95);
+  background: rgba(25, 25, 35, 0.95); /* CHANGED: Brighter background */
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15); /* CHANGED: Brighter border */
   border-radius: 20px;
   padding: 0;
   z-index: 300;
@@ -953,23 +957,27 @@ body {
 
 /* Custom scrollbar for webkit browsers */
 .info-content::-webkit-scrollbar,
-.help-content::-webkit-scrollbar {
+.help-content::-webkit-scrollbar,
+#control-panel::-webkit-scrollbar {
   width: 6px;
 }
 
 .info-content::-webkit-scrollbar-track,
-.help-content::-webkit-scrollbar-track {
+.help-content::-webkit-scrollbar-track,
+#control-panel::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 3px;
 }
 
 .info-content::-webkit-scrollbar-thumb,
-.help-content::-webkit-scrollbar-thumb {
+.help-content::-webkit-scrollbar-thumb,
+#control-panel::-webkit-scrollbar-thumb {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.3));
   border-radius: 3px;
 }
 
 .info-content::-webkit-scrollbar-thumb:hover,
-.help-content::-webkit-scrollbar-thumb:hover {
+.help-content::-webkit-scrollbar-thumb:hover,
+#control-panel::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0.5));
 }
