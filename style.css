@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
   background: #0a0a0f;
   color: #ffffff;
   overflow: hidden;
@@ -65,7 +65,7 @@ body {
 .planet-1 {
   width: 8px;
   height: 8px;
-  background: #8C7853;
+  background: #8c7853;
   margin: -4px 0 0 -60px;
   animation: orbit 3s linear infinite;
 }
@@ -73,7 +73,7 @@ body {
 .planet-2 {
   width: 12px;
   height: 12px;
-  background: #FFC649;
+  background: #ffc649;
   margin: -6px 0 0 -80px;
   animation: orbit 4s linear infinite;
 }
@@ -81,23 +81,32 @@ body {
 .planet-3 {
   width: 10px;
   height: 10px;
-  background: #6B93D6;
+  background: #6b93d6;
   margin: -5px 0 0 -100px;
   animation: orbit 5s linear infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.1); }
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
 @keyframes orbit {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-title {
-  font-family: 'Orbitron', monospace;
+  font-family: "Orbitron", monospace;
   font-size: 2.5rem;
   font-weight: 900;
   background: linear-gradient(45deg, #ffd700, #ff6b35, #4ecdc4);
@@ -180,7 +189,7 @@ body {
 }
 
 .panel-header h2 {
-  font-family: 'Orbitron', monospace;
+  font-family: "Orbitron", monospace;
   font-size: 1.3rem;
   font-weight: 700;
   color: #ffd700;
@@ -460,7 +469,7 @@ body {
 }
 
 .info-header h3 {
-  font-family: 'Orbitron', monospace;
+  font-family: "Orbitron", monospace;
   font-size: 1.3rem;
   color: #ffd700;
 }
@@ -598,7 +607,7 @@ body {
 }
 
 .help-header h3 {
-  font-family: 'Orbitron', monospace;
+  font-family: "Orbitron", monospace;
   font-size: 1.3rem;
   color: #ffd700;
 }
@@ -700,37 +709,37 @@ body {
     max-width: none;
     width: calc(100vw - 20px);
   }
-  
+
   .time-controls {
     flex-wrap: wrap;
   }
-  
+
   .view-presets {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .info-panel {
     top: 10px;
     right: 10px;
     width: calc(100vw - 20px);
     transform: translateY(-100vh);
   }
-  
+
   .info-panel.active {
     transform: translateY(0);
   }
-  
+
   .help-panel {
     width: calc(100vw - 20px);
     max-height: 90vh;
   }
-  
+
   #bottom-ui {
     bottom: 10px;
     right: 10px;
   }
-  
+
   .ui-btn {
     padding: 8px 12px;
     font-size: 0.8rem;
@@ -741,16 +750,16 @@ body {
   .loading-title {
     font-size: 2rem;
   }
-  
+
   .solar-system-logo {
     width: 120px;
     height: 120px;
   }
-  
+
   .toggle-controls {
     flex-direction: column;
   }
-  
+
   .toggle-btn {
     flex: none;
     min-width: auto;

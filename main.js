@@ -23,7 +23,9 @@ function updateLoadingProgress(progress, text) {
   const loadingFact = document.getElementById("loading-fact");
 
   if (progressFill) progressFill.style.width = progress + "%";
-  if (progressText) progressText.textContent = text;
+  if (progressText)
+    progressText.textContent =
+      text || `Initializing solar system... ${Math.round(progress)}%`;
   if (loadingFact && Math.floor(progress) % 20 === 0) {
     loadingFact.textContent =
       loadingFacts[Math.floor(Math.random() * loadingFacts.length)];
@@ -83,32 +85,22 @@ let texturesLoaded = 0;
 let totalTextures = 0;
 
 function loadTexture(url, onLoad, onError) {
+  // Skip external texture loading - use fallback colors instead
+  // This prevents the loading screen from getting stuck
+  texturesLoaded++;
   totalTextures++;
-  return textureLoader.load(
-    url,
-    (texture) => {
-      texturesLoaded++;
-      updateLoadingProgress(
-        (texturesLoaded / totalTextures) * 90,
-        `Loading textures... ${Math.round(
-          (texturesLoaded / totalTextures) * 100
-        )}%`
-      );
-      if (onLoad) onLoad(texture);
-    },
-    undefined,
-    (error) => {
-      texturesLoaded++;
-      console.warn(`Failed to load texture: ${url}`);
-      updateLoadingProgress(
-        (texturesLoaded / totalTextures) * 90,
-        `Loading textures... ${Math.round(
-          (texturesLoaded / totalTextures) * 100
-        )}%`
-      );
-      if (onError) onError(error);
-    }
-  );
+
+  setTimeout(() => {
+    updateLoadingProgress(
+      (texturesLoaded / totalTextures) * 90,
+      `Initializing solar system... ${Math.round(
+        (texturesLoaded / totalTextures) * 100
+      )}%`
+    );
+    if (onLoad) onLoad(null); // Pass null to indicate no texture loaded
+  }, 100); // Small delay to show progress
+
+  return null; // Return null texture
 }
 
 // === Enhanced Planet Data with Accurate Colors ===
@@ -121,8 +113,7 @@ const PLANETS = [
     speed: 4.15,
     tilt: 0.01,
     rotationSpeed: 0.0058,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2266_mercury_rgb_cyl-EDIT-02.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Mercury is the smallest planet in our solar system and the closest to the Sun. It has extreme temperatures and no atmosphere to speak of.",
     facts: [
@@ -148,8 +139,7 @@ const PLANETS = [
     speed: 3.24,
     tilt: (177.4 * Math.PI) / 180,
     rotationSpeed: -0.0024,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2395_Venus_Magellan_Topography_Global_Mosaic.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Venus is the hottest planet in our solar system, with surface temperatures hot enough to melt lead. It's often called Earth's twin due to similar size.",
     facts: [
@@ -175,8 +165,7 @@ const PLANETS = [
     speed: 2.98,
     tilt: (23.5 * Math.PI) / 180,
     rotationSpeed: 0.0167,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2427_earth_recon_0.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Earth is the only known planet with life. It has liquid water, a protective atmosphere, and a magnetic field that shields us from harmful solar radiation.",
     facts: [
@@ -202,8 +191,7 @@ const PLANETS = [
     speed: 2.41,
     tilt: (25.2 * Math.PI) / 180,
     rotationSpeed: 0.0166,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2392_mars_viking_mdim21_1024.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Mars is known as the Red Planet due to iron oxide on its surface. It has the largest volcano and canyon in the solar system.",
     facts: [
@@ -229,8 +217,7 @@ const PLANETS = [
     speed: 1.31,
     tilt: (3.1 * Math.PI) / 180,
     rotationSpeed: 0.0417,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2375_jupiter_true_color.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Jupiter is the largest planet in our solar system. It's a gas giant with a Great Red Spot - a storm larger than Earth that has raged for centuries.",
     facts: [
@@ -256,8 +243,7 @@ const PLANETS = [
     speed: 0.97,
     tilt: (26.7 * Math.PI) / 180,
     rotationSpeed: 0.0378,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2490_saturn_cassini_extended.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Saturn is famous for its prominent ring system. It's a gas giant that's less dense than water - it would float!",
     facts: [
@@ -284,8 +270,7 @@ const PLANETS = [
     speed: 0.68,
     tilt: (97.8 * Math.PI) / 180,
     rotationSpeed: -0.0142,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2412_uranus_voyager2_false_color.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Uranus is unique because it rotates on its side. It's an ice giant with a faint ring system and 27 known moons.",
     facts: [
@@ -311,8 +296,7 @@ const PLANETS = [
     speed: 0.54,
     tilt: (28.3 * Math.PI) / 180,
     rotationSpeed: 0.0158,
-    texture:
-      "https://solarsystem.nasa.gov/system/resources/detail_files/2364_neptune_voyager2_color_enhanced.jpg",
+    // Removed texture URL - using fallback colors instead
     description:
       "Neptune is the windiest planet in our solar system, with winds reaching speeds of up to 2,100 km/h. It's a deep blue ice giant.",
     facts: [
@@ -426,16 +410,58 @@ function createSun() {
 
 // === Planet Creation ===
 const planets = [];
-const planetOrbits = [];
 const planetSpeeds = [];
 const planetAngles = [];
 const planetMeshes = [];
+const planetOrbits = [];
 
+// === Enhanced Planet Creation ===
 function createPlanet(planetData, index) {
-  // Create orbit
+  const geometry = new THREE.SphereGeometry(planetData.size, 64, 64);
+
+  // Create material with enhanced colors instead of textures
+  const material = new THREE.MeshPhongMaterial({
+    color: planetData.color,
+    shininess: 30,
+    specular: 0x333333,
+    // Add some variation based on planet properties
+    emissive: new THREE.Color(planetData.color).multiplyScalar(0.1),
+  });
+
+  const planet = new THREE.Mesh(geometry, material);
+  planet.position.set(planetData.distance, 0, 0);
+  planet.rotation.z = planetData.tilt;
+  planet.castShadow = true;
+  planet.receiveShadow = true;
+
+  // Enhanced visual features for specific planets
+  if (planetData.name === "Earth") {
+    createEarthFeatures(planet, planetData.size);
+    createEarthMoon(planet, planetData.size);
+  } else if (planetData.name === "Mars") {
+    createMarsFeatures(planet, planetData.size);
+  } else if (planetData.name === "Saturn") {
+    createSaturnRings(planet, planetData.size);
+  } else if (planetData.name === "Jupiter") {
+    createJupiterFeatures(planet, planetData.size);
+  }
+
+  scene.add(planet);
+  planetMeshes[index] = planet;
+  planetAngles[index] = Math.random() * Math.PI * 2;
+  planetSpeeds[index] = planetData.speed;
+
+  // Create orbit path
+  createOrbitPath(planetData.distance, index);
+
+  // Simulate texture loading for progress bar
+  loadTexture("", null, null);
+}
+
+function createOrbitPath(distance, index) {
   const orbitGeometry = new THREE.RingGeometry(
-    planetData.distance - 0.1,
-    planetData.distance + 0.1,
+    distance - 0.1,
+    distance + 0.1,
     128
   );
   const orbitMaterial = new THREE.MeshBasicMaterial({
@@ -447,62 +473,40 @@ function createPlanet(planetData, index) {
   const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
   orbit.rotation.x = Math.PI / 2;
   scene.add(orbit);
-  planetOrbits.push(orbit);
+  planetOrbits[index] = orbit;
+}
 
-  // Create planet with proper material handling
-  const geometry = new THREE.SphereGeometry(planetData.size, 64, 64);
-
-  // CHANGED: Enhanced material with better visibility and brightness
-  const material = new THREE.MeshPhongMaterial({
-    color: planetData.color,
-    shininess: planetData.name === "Venus" ? 100 : 30,
-    bumpScale: 0.1,
-    emissive: planetData.color, // NEW: Added emissive color for better visibility
-    emissiveIntensity: 0.1, // NEW: Low intensity emissive for subtle glow
+function createEarthFeatures(planet, size) {
+  // Add some atmospheric glow
+  const atmosphereGeometry = new THREE.SphereGeometry(size * 1.05, 32, 32);
+  const atmosphereMaterial = new THREE.MeshBasicMaterial({
+    color: 0x87ceeb,
+    transparent: true,
+    opacity: 0.1,
+    side: THREE.BackSide,
   });
+  const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+  planet.add(atmosphere);
+}
 
-  // Try to load texture but don't depend on it
-  if (planetData.texture) {
-    loadTexture(
-      planetData.texture,
-      (texture) => {
-        // Successfully loaded texture
-        material.map = texture;
-        material.needsUpdate = true;
-      },
-      (error) => {
-        // Failed to load texture, keep the color
-        console.warn(`Using color fallback for ${planetData.name}`);
-      }
+function createJupiterFeatures(planet, size) {
+  // Add some atmospheric bands
+  for (let i = 0; i < 3; i++) {
+    const bandGeometry = new THREE.TorusGeometry(
+      size * 1.1 + i * 0.2,
+      0.05,
+      8,
+      32
     );
+    const bandMaterial = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(0.1, 0.6, 0.4 + i * 0.1),
+      transparent: true,
+      opacity: 0.3,
+    });
+    const band = new THREE.Mesh(bandGeometry, bandMaterial);
+    band.rotation.x = Math.PI / 2;
+    planet.add(band);
   }
-
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(planetData.distance, 0, 0);
-  mesh.rotation.z = planetData.tilt || 0;
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-
-  scene.add(mesh);
-  planets.push(mesh);
-  planetMeshes.push(mesh);
-  planetSpeeds.push(planetData.speed);
-  planetAngles.push(Math.random() * Math.PI * 2);
-
-  // Add special features
-  if (planetData.name === "Saturn" && planetData.hasRings) {
-    createSaturnRings(mesh, planetData.size);
-  }
-
-  if (planetData.name === "Earth") {
-    createEarthMoon(mesh, planetData.size);
-  }
-
-  if (planetData.name === "Mars") {
-    createMarsFeatures(mesh, planetData.size);
-  }
-
-  return mesh;
 }
 
 function createSaturnRings(planet, size) {
