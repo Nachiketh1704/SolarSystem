@@ -1,6 +1,3 @@
-// Enhanced Solar System 3D Simulation - NASA Edition
-// Advanced features with realistic textures and educational content
-
 // === Loading System ===
 let loadingProgress = 0;
 const loadingFacts = [
